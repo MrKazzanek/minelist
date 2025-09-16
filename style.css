@@ -1,0 +1,525 @@
+body{
+    user-select: none;      /* standard */
+      -webkit-user-select: none; /* Safari/Chrome */
+      -moz-user-select: none; /* Firefox */
+      -ms-user-select: none;  /* IE/Edge */
+}
+:root {
+    --font-family: 'Poppins', sans-serif;
+
+    /* Domyślne kolory (jasny motyw) */
+    --color-background: #f0f2f5;
+    --color-surface: rgba(255, 255, 255, 0.85);
+    --color-surface-solid: #ffffff;
+    --color-text: #1c1e21;
+    --color-text-secondary: #606770;
+    --color-border: #ccd0d5;
+    --color-primary: #1b74e4;
+    --color-primary-hover: #1866c6;
+    --color-danger: #e02c46;
+    --color-danger-hover: #ff6b6b;
+    --color-shadow: rgba(0, 0, 0, 0.1);
+    --color-modal-overlay: rgba(0, 0, 0, 0.4);
+    --background-image: url('img.png');
+    --backdrop-filter: blur(10px);
+    --scrollbar-thumb: #c1c1c1;
+    --scrollbar-track: #e0e0e0;
+}
+
+[data-theme="dark"] {
+    --color-background: #18191a;
+    --color-surface: rgba(40, 42, 44, 0.8);
+    --color-surface-solid: #282a2c;
+    --color-text: #e4e6eb;
+    --color-text-secondary: #b0b3b8;
+    --color-border: #3a3b3c;
+    --color-primary: #2d88ff;
+    --color-primary-hover: #4a9aff;
+    --color-danger: #ff5252;
+    --color-danger-hover: #ff6b6b;
+    --color-shadow: rgba(0, 0, 0, 0.3);
+    --color-modal-overlay: rgba(0, 0, 0, 0.6);
+    --scrollbar-thumb: #434343;
+    --scrollbar-track: #202020;
+}
+
+/* --- Podstawowe style --- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--color-background);
+    background-image: var(--background-image);
+    background-attachment: fixed;
+    color: var(--color-text);
+    line-height: 1.6;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* --- Nagłówek --- */
+header {
+    background-color: var(--color-surface);
+    backdrop-filter: var(--backdrop-filter);
+    border-bottom: 1px solid var(--color-border);
+    padding: 0.75rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.logo {
+    
+    height: 5dvh;
+}
+
+.theme-switcher button {
+    background: none;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-left: 0.5rem;
+    padding: 0.4rem;
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, border-color 0.2s;
+    color: var(--color-text-secondary);
+}
+.theme-switcher button:hover {
+    background-color: var(--color-background);
+    color: var(--color-text);
+}
+.theme-switcher button.active {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+.theme-switcher button svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* --- Główne sekcje --- */
+main {
+    padding: 2rem 1rem;
+}
+
+section {
+    background-color: var(--color-surface-solid);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px var(--color-shadow);
+    border: 1px solid var(--color-border);
+}
+
+h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--color-text);
+    padding-bottom: 0.5rem;
+}
+
+/* --- Kontrolki --- */
+.controls {
+    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+}
+#search-input {
+    flex-grow: 1;
+    min-width: 200px;
+}
+.sort-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* --- Statystyki --- */
+#stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+.stat-item {
+    background-color: var(--color-background);
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--color-primary);
+}
+.stat-item strong {
+    display: block;
+    font-size: 0.9em;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.25rem;
+}
+.stat-item span {
+    font-weight: 600;
+    font-size: 1.2em;
+}
+#stat-status-projects, #stat-status-farms {
+    grid-column: 1 / -1;
+    display: block;
+}
+#stat-status-projects ul, #stat-status-farms ul {
+    list-style: none;
+    padding-left: 0;
+    font-size: 0.9em;
+    columns: 2;
+    column-gap: 1rem;
+}
+
+/* --- Lista Projektów/Farm --- */
+#item-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+#empty-list-message {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--color-text-secondary);
+    font-size: 1.1rem;
+    background-color: var(--color-background);
+    border: 2px dashed var(--color-border);
+    border-radius: 8px;
+}
+
+.item-card {
+    background-color: var(--color-surface-solid);
+    border-radius: 12px;
+    border: 1px solid var(--color-border);
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px var(--color-shadow);
+}
+.item-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px var(--color-shadow);
+}
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    gap: 1rem;
+}
+.card-header h3 {
+    font-size: 1.25rem;
+    margin: 0;
+    word-break: break-word;
+    font-weight: 600;
+}
+.card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.item-type-badge {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.item-type-badge.projekt {
+    background-color: rgba(27, 116, 228, 0.15);
+    color: var(--color-primary);
+}
+.item-type-badge.farma {
+    background-color: rgba(40, 167, 69, 0.15);
+    color: #28a745;
+}
+[data-theme="dark"] .item-type-badge.farma {
+    color: #41c962;
+}
+.item-status {
+    font-size: 0.9em;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+.card-content p {
+    margin-bottom: 0.5rem;
+    color: var(--color-text-secondary);
+    word-break: break-word;
+    font-size: 0.95em;
+}
+.card-content p strong {
+    color: var(--color-text);
+}
+.card-footer {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+    text-align: right;
+}
+.card-actions {
+    display: flex;
+    gap: 0.25rem;
+}
+.card-actions button {
+    background: none;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0.3rem;
+    color: var(--color-text-secondary);
+    transition: color 0.2s, background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+}
+.card-actions button:hover { background-color: var(--color-background); }
+.card-actions button.edit-btn:hover { color: var(--color-primary); }
+.card-actions button.delete-btn:hover { color: var(--color-danger); }
+
+/* --- Formularze i Przyciski --- */
+input, select, textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-family);
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+textarea {
+    resize: none;
+}
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 20%, transparent);
+}
+.form-group {
+    margin-bottom: 1.25rem;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+button {
+    cursor: pointer;
+    font-family: var(--font-family);
+    font-weight: 600;
+    border-radius: 6px;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    transition: background-color 0.2s, color 0.2s, transform 0.1s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+button:active {
+    transform: scale(0.98);
+}
+.primary-btn {
+    background: linear-gradient(to right, var(--color-primary), color-mix(in srgb, var(--color-primary) 80%, #9c32ff));
+    color: #fff;
+    border: 1px solid transparent;
+}
+.primary-btn:hover { 
+    background: linear-gradient(to right, var(--color-primary-hover), color-mix(in srgb, var(--color-primary-hover) 80%, #9c32ff));
+}
+.secondary-btn {
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+}
+.secondary-btn:hover { background-color: var(--color-background); }
+.danger-btn {
+    background-color: var(--color-danger);
+    color: #fff;
+}
+.danger-btn:hover { background-color: var(--color-danger-hover); }
+.danger-btn:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+.danger-zone {
+    border: 1px solid var(--color-danger);
+    text-align: center;
+}
+
+/* --- Modale --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-modal-overlay);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+.modal-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
+.modal-content {
+    background-color: var(--color-surface);
+    backdrop-filter: var(--backdrop-filter);
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transform: scale(0.95);
+    transition: transform 0.3s;
+    border: 1px solid var(--color-border);
+}
+.modal-overlay.visible .modal-content {
+    transform: scale(1);
+}
+.close-modal-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    line-height: 1;
+    padding: 0.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, color 0.2s;
+}
+.close-modal-btn:hover {
+    background-color: var(--color-background);
+    color: var(--color-text);
+}
+.modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+}
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+#confirm-delete-all-modal input {
+    margin-top: 1rem;
+}
+
+/* --- Stopka --- */
+footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    margin-top: 2rem;
+    color: var(--color-text-secondary);
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-surface-solid);
+}
+
+/* --- Responsywność --- */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1.5rem;
+    }
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .form-actions {
+        flex-direction: column;
+    }
+    .form-actions button {
+        width: 100%;
+    }
+}
+@media (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
+    header .container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    h1 {
+        font-size: 1.6rem;
+    }
+    #item-list {
+        grid-template-columns: 1fr;
+    }
+    .modal-content {
+        padding: 1.5rem;
+    }
+    #stat-status-projects ul, #stat-status-farms ul {
+        columns: 1;
+    }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 12px;
+}
+::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+}
+::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 10px;
+    border: 3px solid var(--scrollbar-track);
+}
+img {
+  -webkit-user-drag: none; /* Safari/Chrome */
+  
+}
