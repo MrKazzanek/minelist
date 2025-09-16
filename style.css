@@ -1,3 +1,9 @@
+body{
+    user-select: none;      /* standard */
+      -webkit-user-select: none; /* Safari/Chrome */
+      -moz-user-select: none; /* Firefox */
+      -ms-user-select: none;  /* IE/Edge */
+}
 /* --- Zmienne CSS dla motywów --- */
 :root {
     --font-family: 'Poppins', sans-serif;
@@ -127,8 +133,8 @@ header h1 {
 }
 
 .logo {
-    width: 32px;
-    height: 32px;
+    
+    height: 5dvh;
 }
 
 .theme-switcher button {
@@ -593,3 +599,8 @@ footer {
     border-radius: 10px;
     border: 3px solid var(--scrollbar-track);
 }
+img {
+  -webkit-user-drag: none; /* Safari/Chrome */
+  
+}
+
