@@ -1,8 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- SELEKTORY DOM ---
-    const itemList = document.getElementById('item-list');
-    const emptyListMessage = document.getElementById('empty-list-message');
+    const projectList = document.getElementById('project-list');
+    const farmList = document.getElementById('farm-list');
+    const emptyProjectListMessage = document.getElementById('empty-project-list-message');
+    const emptyFarmListMessage = document.getElementById('empty-farm-list-message');
     const searchInput = document.getElementById('search-input');
     const sortSelect = document.getElementById('sort-select');
     const addNewBtn = document.getElementById('add-new-btn');
@@ -72,12 +74,22 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const renderItems = () => {
-        itemList.innerHTML = '';
+        const projects = items.filter(item => item.type === 'projekt');
+        const farms = items.filter(item => item.type === 'farma');
+        
+        renderList(projects, projectList, emptyProjectListMessage);
+        renderList(farms, farmList, emptyFarmListMessage);
+        
+        updateStats();
+    };
+
+    const renderList = (itemListData, listElement, emptyMessageElement) => {
+        listElement.innerHTML = '';
         const searchTerm = searchInput.value.toLowerCase();
         const sortBy = sortSelect.value;
 
         // Filtrowanie
-        const filteredItems = items.filter(item =>
+        const filteredItems = itemListData.filter(item =>
             item.name.toLowerCase().includes(searchTerm) ||
             item.type.toLowerCase().includes(searchTerm) ||
             item.description.toLowerCase().includes(searchTerm) ||
@@ -103,14 +115,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Renderowanie
         if (sortedItems.length === 0) {
-            emptyListMessage.style.display = 'block';
+            emptyMessageElement.style.display = 'block';
         } else {
-            emptyListMessage.style.display = 'none';
+            emptyMessageElement.style.display = 'none';
             sortedItems.forEach(item => {
                 const itemElement = document.createElement('article');
                 itemElement.className = 'item-card';
                 itemElement.dataset.id = item.id;
                 
+                // Tworzenie klasy CSS ze statusu
+                const statusClass = 'status-' + item.status.toLowerCase().replace(/ /g, '-').replace(/ł/g, 'l').replace(/ż/g, 'z').replace(/ą/g, 'a').replace(/ę/g, 'e').replace(/ć/g, 'c').replace(/ń/g, 'n').replace(/ó/g, 'o').replace(/ś/g, 's').replace(/ź/g, 'z');
+
                 itemElement.innerHTML = `
                     <div class="card-header">
                         <h3>${item.name}</h3>
@@ -125,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="card-meta">
                         <span class="item-type-badge ${item.type}">${item.type}</span>
-                        <span class="item-status">${item.status}</span>
+                        <span class="item-status ${statusClass}">${item.status}</span>
                     </div>
                     <div class="card-content">
                         ${item.description ? `<p><strong>Opis:</strong> ${item.description}</p>` : ''}
@@ -135,10 +150,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         <small>Edytowano: ${new Date(item.updatedAt).toLocaleDateString('pl-PL')}</small>
                     </div>
                 `;
-                itemList.appendChild(itemElement);
+                listElement.appendChild(itemElement);
             });
         }
-        updateStats();
     };
     
     const updateStats = () => {
@@ -252,7 +266,10 @@ document.addEventListener('DOMContentLoaded', () => {
     cancelBtn.addEventListener('click', () => closeModal(formModal));
     
     // Delegacja zdarzeń dla przycisków edycji i usuwania
-    itemList.addEventListener('click', (e) => {
+    document.getElementById('project-list').addEventListener('click', handleCardActions);
+    document.getElementById('farm-list').addEventListener('click', handleCardActions);
+
+    function handleCardActions(e) {
         const editBtn = e.target.closest('.edit-btn');
         const deleteBtn = e.target.closest('.delete-btn');
 
@@ -271,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
             deleteMessage.textContent = `Czy na pewno chcesz usunąć "${item.name}"?`;
             openModal(confirmDeleteModal);
         }
-    });
+    }
 
     confirmDeleteBtn.addEventListener('click', () => {
         if(itemToDeleteId) {
